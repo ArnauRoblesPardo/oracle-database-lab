@@ -5,4 +5,7 @@ testing, change management and Git workflows.
 
 NAME: Arnau Robles Pardo
 Professor: Richard Aviles Lopez
-test
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for branch and commit conventions.
+
+

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # scripts/deployment/env/00-config.sh
-# Constantes del proyecto oracle-database-lab. Uso: source scripts/deployment/env/00-
-config.sh
+# Constantes del proyecto oracle-database-lab. Uso: source scripts/deployment/env/00-config.sh
 # NO contiene secretos: las contraseñas viven en config/.env (Parte D).
 export CONT_NAME="oralab-26ai"
 export VOL_NAME="oralab-26ai-data"
@@ -14,3 +13,8 @@ export BACKUP_DIR="$(pwd)/backups"
 export EVID="docs/bitacora/evidencia"
 # Marca de tiempo ISO 8601 en UTC para nombrar la evidencia: $(ts)
 ts() { date -u +%Y%m%dT%H%M%SZ; }
+# ORDS (Parte M): middleware instalado en Linux, fuera del contenedor de la base
+export ORDS_HOME="/opt/oracle/ords"
+export ORDS_CONFIG="/etc/ords/config"
+export ORDS_LOGS="/var/log/ords"
+export ORDS_PORT=8080

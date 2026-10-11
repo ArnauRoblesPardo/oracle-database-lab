@@ -1,0 +1,24 @@
+== 1. Java (ORDS requiere 17 o 21) ==
+openjdk version "21.0.12.1" 2026-08-18
+== 2. Programa ORDS en /opt/oracle/ords ==
+
+ORDS: Release 26.3 Production on Thu Oct 08 16:05:18 2026
+
+Copyright (c) 2010, 2026, Oracle.
+
+Configuration:
+  /etc/ords/config
+
+Oracle REST Data Services 26.3.0.r2721811
+== 3. Instalacion en FREEPDB1 (no interactiva) ==
+ORDS ya esta configurado; no se reinstala.
+== 4. Puerto HTTP del modo standalone ==
+
+ORDS: Release 26.3 Production on Thu Oct 08 16:05:21 2026
+
+Copyright (c) 2010, 2026, Oracle.
+
+Configuration:
+  /etc/ords/config
+
+No updates required to setting named standalone.http.port in global configuration because the values are the same.

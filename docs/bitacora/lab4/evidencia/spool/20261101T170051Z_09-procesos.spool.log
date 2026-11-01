@@ -1,0 +1,54 @@
+SQL Format Cleared
+
+== 1. Cuantos procesos tiene la instancia y de que tipo ==
+
+TIPO        PROCESOS_ORACLE PROCESOS_LINUX
+----------- --------------- --------------
+background               83             50
+servidor                  4              4
+(si procesos_oracle > procesos_linux: algunos procesos Oracle son hilos dentro de un mismo proceso Linux)
+
+== 2. Procesos obligatorios y relevantes para el examen ==
+
+PNAME  SPID     DESCRIPTION
+------ -------- ------------------------------------------------
+PMON   7709     process cleanup
+LREG   7775     Listener Registration
+SMON   7766     System Monitor Process
+DBW0   7759     db writer process 0
+LGWR   7761     Redo etc.
+CKPT   7764     checkpoint
+MMON   7785     Manageability Monitor Process
+MMNL   7789     Manageability Monitor Process 2
+RECO   7773     distributed recovery
+ARC0   7860     Archival Process 0
+CJQ0   8069     Job Queue Coordinator
+CLMN   7713     process cleanup
+DIA0   7757     diagnosibility process 0
+DIAG   7739     diagnosibility process
+MMAN   7731     Memory Manager
+PMAN   7751     process manager
+PSP0   7717     process spawner 0
+VKTM   7721     Virtual Keeper of TiMe process
+
+== 3. Hay archivadores ARCn? ==
+
+PROCESOS_ARCN
+-------------
+            4
+
+== 4. Mi sesion y el proceso servidor que la atiende ==
+
+       SID    SERIAL# USERNAME     MACHINE        PROGRAM                            SPID
+---------- ---------- ------------ -------------- ---------------------------------- --------
+       175      58633 C##OPS_RO    DESKTOP-6URQQ7 SQLcl                              9952
+                                   O
+
+
+== 5. Todas las sesiones de usuario ahora mismo ==
+
+       SID USERNAME     STATUS   MACHINE        PROGRAM                            SPID
+---------- ------------ -------- -------------- ---------------------------------- --------
+       175 C##OPS_RO    ACTIVE   DESKTOP-6URQQ7 SQLcl                              9952
+                                 O
+

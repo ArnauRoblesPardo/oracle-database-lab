@@ -16,7 +16,7 @@ Thread 1 opened at log sequence 10
 Successful open of redo thread 1
 PDB$SEED(2):Opening pdb with Resource Manager plan: DEFAULT_PLAN
 FREEPDB1(3):Opening pdb with Resource Manager plan: DEFAULT_PLAN
-Completed: Pluggable database FREEPDB1 opened read write 
+Completed: Pluggable database FREEPDB1 opened read write
 Completed: ALTER DATABASE OPEN
 Shutting down ORACLE instance (immediate) (OS id: 7705)
 Shutting down instance: further logons disabled
@@ -42,5 +42,5 @@ Thread 1 opened at log sequence 10
 Successful open of redo thread 1
 PDB$SEED(2):Opening pdb with Resource Manager plan: DEFAULT_PLAN
 FREEPDB1(3):Opening pdb with Resource Manager plan: DEFAULT_PLAN
-Completed: Pluggable database FREEPDB1 opened read write 
+Completed: Pluggable database FREEPDB1 opened read write
 Completed: ALTER DATABASE OPEN

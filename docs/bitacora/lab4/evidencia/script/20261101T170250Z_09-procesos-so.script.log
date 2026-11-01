@@ -1,0 +1,18 @@
+== 1. Procesos de background clave (compara PID con SPID de Oracle) ==
+7709     86         db_pmon_FREE
+7759     122        db_dbw0_FREE
+7761     105        db_lgwr_FREE
+7764     106        db_ckpt_FREE
+7766     121        db_smon_FREE
+7773     109        db_reco_FREE
+7775     123        db_lreg_FREE
+7785     271        db_mmon_FREE
+7789     94         db_mmnl_FREE
+== 2. Recuento por tipo ==
+    background (db_*_FREE / ora_*_FREE): 54
+    servidor dedicado (oracleFREE):       0
+    listener (tnslsnr):                   1
+== 3. Procesos servidor ==
+    (ninguno: puede que no haya una sesión dedicada visible)
+== 4. El proceso con SPID 7764 ==
+7764     106        db_ckpt_FREE

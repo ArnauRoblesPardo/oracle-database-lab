@@ -1,0 +1,82 @@
+
+===== 1. SCOPE=MEMORY: cambia ahora, se pierde al reiniciar =====
+
+NAME		 EN_MEMORIA   EN_SPFILE
+---------------- ------------ ----------------
+open_cursors	 400	      300
+
+===== 2. SCOPE=BOTH: cambia ahora y queda en SPFILE =====
+
+NAME		 EN_MEMORIA   EN_SPFILE        UPDATE_COMMENT
+---------------- ------------ ---------------- ----------------------------------------
+open_cursors	 500	      500	       Lab4: prueba SCOPE=BOTH
+-- Deshacer: restaurar el valor original
+
+===== 3. Parámetro estático: ORA-02095 esperado =====
+ALTER SYSTEM SET db_files = 300 SCOPE = MEMORY
+                 *
+ERROR at line 1:
+ORA-02095: specified initialization parameter cannot be modified
+Help: https://docs.oracle.com/error-help/db/ora-02095/
+
+
+-- Escribirlo en SPFILE, pendiente del próximo arranque
+
+NAME		 EN_MEMORIA   EN_SPFILE
+---------------- ------------ ----------------
+db_files	 200	      300
+-- Deshacer con RESET
+
+NAME		 EN_MEMORIA   EN_SPFILE
+---------------- ------------ ----------------
+db_files	 200	      (no especificado
+			      )
+
+
+===== 4. Dos casos que el examen adora =====
+-- PROCESSES es estático: error esperado al cambiar MEMORY
+ALTER SYSTEM SET processes = 250 SCOPE = MEMORY
+*
+ERROR at line 1:
+ORA-02097: parameter cannot be modified because specified value is invalid
+ORA-02095: specified initialization parameter cannot be modified
+Help: https://docs.oracle.com/error-help/db/ora-02097/
+
+
+-- MEMORY_SIZE puede devolver ORA-62352 si no se fijó al arrancar
+ALTER SYSTEM SET memory_size = 1600M SCOPE = MEMORY
+*
+ERROR at line 1:
+ORA-02097: parameter cannot be modified because specified value is invalid
+ORA-62352: cannot dynamically set MEMORY_SIZE if not set at startup
+Help: https://docs.oracle.com/error-help/db/ora-02097/
+
+
+
+===== 5. Parámetros a nivel de PDB =====
+
+CONTENEDOR NAME 	    EN_MEMORIA
+---------- ---------------- ------------
+FREEPDB1   open_cursors     350
+-- Parámetro de instancia desde una PDB: ORA-65040 esperado
+ALTER SYSTEM SET processes = 300 SCOPE = SPFILE
+*
+ERROR at line 1:
+ORA-65040: Operation is not allowed from within a pluggable database.
+Help: https://docs.oracle.com/error-help/db/ora-65040/
+
+
+-- Deshacer: heredar de nuevo el valor del CDB
+
+CONTENEDOR NAME 	    EN_MEMORIA
+---------- ---------------- ------------
+CDB$ROOT   open_cursors     300
+
+===== 6. Nivel de sesión =====
+
+AHORA_CON_FORMATO_D
+-------------------
+2026-11-01 16:04:43
+
+===== 7. Copia legible del SPFILE (PFILE) =====
+PFILE creados en /tmp del contenedor.

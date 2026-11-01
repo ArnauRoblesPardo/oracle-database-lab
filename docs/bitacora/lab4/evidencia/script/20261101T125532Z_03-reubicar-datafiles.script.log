@@ -1,0 +1,11 @@
+== 1. Datafiles de negocio fuera de /opt/oracle/oradata/FREE/FREEPDB1 ==
+Nada que reubicar: ya están todos en /opt/oracle/oradata/FREE/FREEPDB1
+== 3. Resultado ==
+
+The command 'docker' could not be found in this WSL 2 distro.
+We recommend to activate the WSL integration in Docker Desktop settings.
+
+For details about using Docker Desktop with WSL 2, visit:
+
+https://docs.docker.com/go/wsl2/
+

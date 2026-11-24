@@ -1,0 +1,7 @@
+DECLARE
+*
+ERROR at line 1:
+ORA-20010: No existe el ??ndice TIENDASUR.PK_PEDIDO en FREEPDB1
+ORA-06512: at line 11
+
+

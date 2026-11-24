@@ -1,0 +1,30 @@
+
+===== 1. Espacio de la FRA ahora =====
+
+NAME				LIMITE_MB   USADO_MB
+------------------------------ ---------- ----------
+/opt/oracle/oradata/fra 	     4096	   0
+
+===== 2. Encoger la FRA por debajo de lo necesario (solo laboratorio) =====
+
+===== 3. Generar redo y pedir que se archive =====
+
+===== 4. Grupos sin archivar y alert log =====
+
+    GROUP#  SEQUENCE# ARC STATUS
+---------- ---------- --- ----------------
+	 1	   25 YES ACTIVE
+	 2	   26 YES ACTIVE
+	 3	   27 NO  CURRENT
+
+===== 5. Solucion inmediata: devolver espacio a la FRA =====
+
+    GROUP#  SEQUENCE# ARC STATUS
+---------- ---------- --- ----------------
+	 1	   28 NO  CURRENT
+	 2	   26 YES ACTIVE
+	 3	   27 YES ACTIVE
+
+NAME				LIMITE_MB   USADO_MB
+------------------------------ ---------- ----------
+/opt/oracle/oradata/fra 	     4096	 1.9

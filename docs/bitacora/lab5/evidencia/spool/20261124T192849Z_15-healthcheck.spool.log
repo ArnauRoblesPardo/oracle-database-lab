@@ -1,0 +1,77 @@
+SQL Format Cleared
+
+== 1. Disponibilidad ==
+
+COMPROBACION                       VALOR                                   
+---------------------------------- ----------------------------------------
+Instancia                          OPEN desde 2026-11-24 16:28             
+Base de datos                      READ WRITE · ARCHIVELOG                 
+PDB FREEPDB1                       READ WRITE                              
+
+== 2. Espacio: tablespaces por encima del 80 % (vacio = bien) ==
+
+== 3. Recuperabilidad: FRA y ultimo archivado ==
+
+COMPROBACION                       VALOR                                   
+---------------------------------- ----------------------------------------
+FRA usada                          119 de 4096 MB (2.9 %)                  
+Ultimo redo archivado              2026-11-24 19:20                        
+Copias del control file            3                                       
+Grupos de redo con 1 solo miembro  0                                       
+
+== 4. Capacidad: uso frente a limites de la instancia ==
+
+RESOURCE_NAME               AHORA     MAXIMO LIMITE    
+---------------------- ---------- ---------- ----------
+processes                      90        103        200
+sessions                      114        129        322
+transactions                    0          3  UNLIMITED
+
+== 5. Errores ORA- en el alert log en las ultimas 24 h ==
+
+Error starting at line : 72 File @ file:/home/arnau/oracle-database-lab/scripts/lab5/15-healthcheck.sql
+In command -
+SELECT TO_CHAR(originating_timestamp, 'MM-DD HH24:MI') AS cuando,
+       SUBSTR(
+         REGEXP_SUBSTR(message_text, 'ORA-[0-9]+[^' || CHR(10) || ']*'),
+         1, 90
+       ) AS mensaje
+FROM v$diag_alert_ext
+WHERE originating_timestamp > SYSTIMESTAMP - INTERVAL '1' DAY
+  AND message_text LIKE '%ORA-%'
+ORDER BY originating_timestamp DESC
+FETCH FIRST 10 ROWS ONLY
+Error at Command Line : 77 Column : 6 File @ file:/home/arnau/oracle-database-lab/scripts/lab5/15-healthcheck.sql
+Error report -
+SQL Error: ORA-00942: table or view "SYS"."V_$DIAG_ALERT_EXT" does not exist
+Help: https://docs.oracle.com/error-help/db/ora-00942/
+
+== 6. Cambios de log por hora en las ultimas 24 h ==
+
+HORA         CAMBIOS
+--------- ----------
+11-24 14h          1
+11-24 15h         13
+11-24 16h          1
+
+== 7. Copias de seguridad RMAN: las ultimas ==
+
+INICIO      INPUT_TYPE     STATUS             MB   SEGUNDOS
+----------- -------------- ---------- ---------- ----------
+11-24 19:20 DATAFILE FULL  COMPLETED          38          3
+
+== 8. Indices que piden atencion ==
+
+OWNER            PROBLEMA                          INDICES EJEMPLO                 
+---------------- ------------------------------ ---------- ------------------------
+ADMIN_CLINICA    sin estadisticas                        8 IDX_CLI_CITAS_FECHA     
+ADMIN_FINTECH    sin estadisticas                        6 IDX_FIN_TX_DESTINO      
+ADMIN_LOGISTICA  sin estadisticas                        6 IDX_LOG_EVENTOS_ENVIO   
+ADMIN_RETAIL     sin estadisticas                        7 IDX_RET_DETALLE_PROD    
+("sin estadisticas" en esquemas vacios es esperable; en uno con datos, el optimizador trabaja a ciegas: DBMS_STATS)
+
+== 9. Undo: errores ORA-01555 o falta de espacio en las ultimas 24 h ==
+
+ ORA_01555 SIN_ESPACIO_UNDO CONSULTA_MAS_LARGA_S
+---------- ---------------- --------------------
+         0                0                 2204

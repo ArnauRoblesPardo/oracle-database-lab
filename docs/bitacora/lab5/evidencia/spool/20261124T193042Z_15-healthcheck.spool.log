@@ -1,0 +1,73 @@
+SQL Format Cleared
+
+== 1. Disponibilidad ==
+
+COMPROBACION                       VALOR                                   
+---------------------------------- ----------------------------------------
+Instancia                          OPEN desde 2026-11-24 16:28             
+Base de datos                      READ WRITE · ARCHIVELOG                 
+PDB FREEPDB1                       READ WRITE                              
+
+== 2. Espacio: tablespaces por encima del 80 % (vacio = bien) ==
+
+== 3. Recuperabilidad: FRA y ultimo archivado ==
+
+COMPROBACION                       VALOR                                   
+---------------------------------- ----------------------------------------
+FRA usada                          119 de 4096 MB (2.9 %)                  
+Ultimo redo archivado              2026-11-24 19:20                        
+Copias del control file            3                                       
+Grupos de redo con 1 solo miembro  0                                       
+
+== 4. Capacidad: uso frente a limites de la instancia ==
+
+RESOURCE_NAME               AHORA     MAXIMO LIMITE    
+---------------------- ---------- ---------- ----------
+processes                      91        103        200
+sessions                      115        129        322
+transactions                    0          3  UNLIMITED
+
+== 5. Errores ORA- en el alert log en las ultimas 24 h ==
+
+CUANDO      MENSAJE                                                                                   
+----------- ------------------------------------------------------------------------------------------
+11-24 19:23 ORA-01113: file 21 needs media recovery                                                   
+11-24 19:23 ORA-01113: file 21 needs media recovery                                                   
+11-24 19:23 ORA-01110: data file 21: '/opt/oracle/oradata/FREE/FREEPDB1/tiendasur01.dbf'              
+11-24 19:23 ORA-01110: data file 20: '/opt/oracle/oradata/FREE/FREEPDB1/fintech01.dbf'                
+11-24 19:23 ORA-01110: data file 19: '/opt/oracle/oradata/FREE/FREEPDB1/logistica01.dbf'              
+11-24 19:23 ORA-01110: data file 18: '/opt/oracle/oradata/FREE/FREEPDB1/retail01.dbf'                 
+11-24 19:23 ORA-01110: data file 17: '/opt/oracle/oradata/FREE/FREEPDB1/clinica01.dbf'                
+11-24 19:23 ORA-01110: data file 16: '/opt/oracle/oradata/FREE/FREEPDB1/academia01.dbf'               
+11-24 19:23 ORA-01110: data file 15: '/opt/oracle/oradata/FREE/FREEPDB1/users01.dbf'                  
+11-24 19:23 ORA-01110: data file 14: '/opt/oracle/oradata/FREE/FREEPDB1/undotbs01.dbf'                
+
+== 6. Cambios de log por hora en las ultimas 24 h ==
+
+HORA         CAMBIOS
+--------- ----------
+11-24 14h          1
+11-24 15h         13
+11-24 16h          1
+
+== 7. Copias de seguridad RMAN: las ultimas ==
+
+INICIO      INPUT_TYPE     STATUS             MB   SEGUNDOS
+----------- -------------- ---------- ---------- ----------
+11-24 19:20 DATAFILE FULL  COMPLETED          38          3
+
+== 8. Indices que piden atencion ==
+
+OWNER            PROBLEMA                          INDICES EJEMPLO                 
+---------------- ------------------------------ ---------- ------------------------
+ADMIN_CLINICA    sin estadisticas                        8 IDX_CLI_CITAS_FECHA     
+ADMIN_FINTECH    sin estadisticas                        6 IDX_FIN_TX_DESTINO      
+ADMIN_LOGISTICA  sin estadisticas                        6 IDX_LOG_EVENTOS_ENVIO   
+ADMIN_RETAIL     sin estadisticas                        7 IDX_RET_DETALLE_PROD    
+("sin estadisticas" en esquemas vacios es esperable; en uno con datos, el optimizador trabaja a ciegas: DBMS_STATS)
+
+== 9. Undo: errores ORA-01555 o falta de espacio en las ultimas 24 h ==
+
+ ORA_01555 SIN_ESPACIO_UNDO CONSULTA_MAS_LARGA_S
+---------- ---------------- --------------------
+         0                0                 2204

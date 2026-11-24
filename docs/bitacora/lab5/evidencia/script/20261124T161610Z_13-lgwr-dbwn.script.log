@@ -1,0 +1,25 @@
+
+
+
+===== Paso 0: checkpoint para partir de una cache sin bloques sucios =====
+
+
+
+===== Paso 1: UPDATE de las 20 000 filas y COMMIT =====
+
+
+
+===== Paso 2: CHECKPOINT: DBWn vuelca los bloques sucios =====
+
+
+
+
+===== Resultado: lo que cambio en cada paso =====
+
+PASO				      REDO_KB ESCRITURAS_LGWR	COMMITS_ BLOQUES_DBWN BLOQUES_SUCIOS_TABLA
+---------------------------------- ---------- --------------- ---------- ------------ --------------------
+0. Punto de partida											 0
+1. UPDATE 20 000 filas + COMMIT 	 1779		    2	       1	    0		       231
+2. ALTER SYSTEM CHECKPOINT		    8		    1	       0	  346			 0
+Las cifras son de toda la instancia y pueden incluir actividad de fondo.
+COMMIT mueve redo con LGWR; CHECKPOINT mueve bloques con DBWn.

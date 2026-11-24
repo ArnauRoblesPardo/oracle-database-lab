@@ -1,0 +1,25 @@
+
+Session altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+
+Grant succeeded.
+
+GRANT SELECT ANY TABLE ON SCHEMA tiendasur TO lab_tools
+                                 *
+ERROR at line 1:
+ORA-25705: Schema "TIENDASUR" does not exist.
+Help: https://docs.oracle.com/error-help/db/ora-25705/
+
+

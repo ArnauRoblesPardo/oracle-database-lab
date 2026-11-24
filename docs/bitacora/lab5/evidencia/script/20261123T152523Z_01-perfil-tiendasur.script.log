@@ -1,0 +1,53 @@
+
+Session altered.
+
+
+===== 1. TABLAS: FILAS, BLOQUES, BYTES POR FILA Y BFR =====
+
+TABLE_NAME	      R       B R_BYTES     BFR        MB LAST_ANALYZED
+------------ ---------- ------- ------- ------- --------- ----------------
+CLIENTE 	 100000    1253      83      80      10.0 2026-11-23 15:25
+PEDIDO		1000000    5788      36     173      46.0 2026-11-23 15:25
+
+2 rows selected.
+
+
+===== 2. SESGOS DE CLIENTES =====
+
+DATO				    PCT
+---------------------------- ----------
+cliente pais = ES		   60.2
+cliente ciudad = Lorca		     .1
+cliente apellidos LIKE Gonz%	    2.1
+
+3 rows selected.
+
+
+===== 3. DISTRIBUCION DE ESTADOS DE PEDIDOS =====
+
+E      FILAS PORCENTAJE
+- ---------- ----------
+C     902000	   90.2
+D      28000	    2.8
+E      50000	      5
+P      20000	      2
+
+4 rows selected.
+
+
+===== 4. INDICES DEL BANCO =====
+
+INDEX_NAME															 UNIQUENES INDEX_TYPE
+-------------------------------------------------------------------------------------------------------------------------------- --------- ---------------------------
+IX_CLI_PAIS_CIUDAD														 NONUNIQUE NORMAL
+IX_PED_CLIENTE															 NONUNIQUE NORMAL
+IX_PED_FECHA															 NONUNIQUE NORMAL
+IX_PED_IMPORTE															 NONUNIQUE NORMAL
+PK_CLI																 UNIQUE    NORMAL
+PK_PED																 UNIQUE    NORMAL
+UX_CLI_EMAIL															 UNIQUE    NORMAL
+
+7 rows selected.
+
+
+===== PERFIL TIENDASUR FINALIZADO =====

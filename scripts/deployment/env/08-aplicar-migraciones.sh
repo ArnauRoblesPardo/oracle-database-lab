@@ -13,7 +13,7 @@ source scripts/deployment/env/00-config.sh
   exit 2
 }
 
-DEST="docs/bitacora/lab4/evidencia/spool"
+DEST="${MIG_EVID:-docs/bitacora/lab4/evidencia/spool}"
 mkdir -p "$DEST"
 
 for MIG in "$@"; do
@@ -23,7 +23,7 @@ for MIG in "$@"; do
     exit 2
   }
 
-  LOG="$DEST/$(ts)_04-$MIG.spool.log"
+  LOG="$DEST/$(ts)_${MIG_PARTE:-04}-$MIG.spool.log"
   echo ">> Aplicando $MIG"
 
   if ! docker exec -i "$CONT_NAME" sqlplus -s -L / as sysdba < "$FILE" | tee "$LOG"; then

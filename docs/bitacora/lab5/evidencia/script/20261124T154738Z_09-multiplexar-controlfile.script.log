@@ -1,0 +1,10 @@
+Control files actuales: /opt/oracle/oradata/FREE/control01.ctl, /opt/oracle/oradata/FREE/control02.ctl
+== 1. Configurar las tres copias en el SPFILE ==
+
+System altered.
+
+== 2. Apagar Oracle limpiamente ==
+Database closed.
+Database dismounted.
+ORACLE instance shut down.
+== 3. Copiar un control file sano ==

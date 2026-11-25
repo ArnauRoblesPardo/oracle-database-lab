@@ -1,0 +1,77 @@
+
+Session altered.
+
+==========================================
+V004 - BANCO DE PRUEBAS TIENDASUR
+==========================================
+Tablespace TBS_TIENDASUR creado.
+
+PL/SQL procedure successfully completed.
+
+Usuario TIENDASUR creado.
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+Clientes insertados: 100000
+
+PL/SQL procedure successfully completed.
+
+Pedidos insertados: 1000000
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+=== FILAS DEL BANCO TIENDASUR ===
+
+TABLA	     FILAS
+------- ----------
+CLIENTE     100000
+PEDIDO	   1000000
+
+2 rows selected.
+
+=== DISTRIBUCION DE ESTADOS ===
+
+E      FILAS PORCENTAJE
+- ---------- ----------
+C     902000	   90.2
+D      28000	    2.8
+E      50000	      5
+P      20000	      2
+
+4 rows selected.
+
+=== SESGO DE CLIENTES ===
+
+PORCENTAJE_ESPANA CLIENTES_LORCA PORCENTAJE_GONZ
+----------------- -------------- ---------------
+	     60.2	      98	    2.12
+
+1 row selected.
+
+=== INDICES ===
+
+INDEX_NAME															 UNIQUENES
+-------------------------------------------------------------------------------------------------------------------------------- ---------
+IX_CLI_PAIS_CIUDAD														 NONUNIQUE
+IX_PED_CLIENTE															 NONUNIQUE
+IX_PED_FECHA															 NONUNIQUE
+IX_PED_IMPORTE															 NONUNIQUE
+PK_CLI																 UNIQUE
+PK_PED																 UNIQUE
+UX_CLI_EMAIL															 UNIQUE
+
+7 rows selected.
+
+=== V004 FINALIZADA ===

@@ -1,0 +1,27 @@
+===== 1. Copias del control file (multiplexacion) =====
+
+NAME						 STATUS  BLOCK_SIZE FILE_SIZE_BLKS
+------------------------------------------------ ------- ---------- --------------
+/opt/oracle/oradata/FREE/control01.ctl			      16384	      1146
+/opt/oracle/oradata/FREE/control02.ctl			      16384	      1146
+===== 2. Secciones del control file =====
+
+TYPE			     RECORDS_TOTAL RECORDS_USED
+---------------------------- ------------- ------------
+STANDBY DATABASE MATRIX 	       128	    128
+OFFLINE RANGE			      1063	     63
+FILENAME			      4146	     24
+DATAFILE			      1024	     21
+ARCHIVED LOG				28	     21
+LOG HISTORY			       292	     21
+TABLESPACE			      1024	     20
+ACM OPERATION				64	     13
+THREAD INSTANCE NAME MAPPING		 8	      8
+DELETED OBJECT			       818	      5
+===== 3. Dias de conservacion de registros =====
+
+NAME						 VALUE
+------------------------------------------------ ------------------------------------------------------------
+control_file_record_keep_time			 7
+===== 4. Copia logica de seguridad del control file =====
+Creado controlfile_lab5.trc dentro del volumen

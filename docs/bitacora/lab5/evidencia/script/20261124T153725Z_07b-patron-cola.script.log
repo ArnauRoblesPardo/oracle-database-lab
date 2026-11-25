@@ -1,0 +1,15 @@
+===== 1. La cola trabaja =====
+
+MENSAJES_VIVOS    PRIMERO     ULTIMO
+-------------- ---------- ----------
+        100000     150001     250000
+===== 2. El síntoma: dame el siguiente mensaje =====
+siguiente mensaje (cola)       filas=      1 lecturas l??gicas=    238 f??sicas=    0      .4 ms
+                               plan: COUNT STOPKEY > VIEW > INDEX FULL SCAN IX_COLA
+siguiente mensaje (sano)       filas=      1 lecturas l??gicas=      2 f??sicas=    0      .1 ms
+                               plan: COUNT STOPKEY > VIEW > INDEX FULL SCAN IX_CRECIENTE
+===== 3. Entradas borradas que siguen ocupando sitio =====
+
+INDEX_NAME     ALTURA      HOJAS   ENTRADAS   BORRADAS PCT_BORRADAS   PCT_USED   MB_ARBOL
+---------- ---------- ---------- ---------- ---------- ------------ ---------- ----------
+IX_COLA             2        437     175253      75253           43         80        3.3

@@ -150,3 +150,168 @@ En la traza tenemos la línea FETCH p=0, cr=247. En esta línea el parámetro cr
 - **INC-602 – Servicio de aplicación no anunciado por el listener:** Comprobé que `FREEPDB1` estaba abierta, pero que `academia_app` no estaba activo ni anunciado por el listener; ejecuté el procedimiento de arranque del servicio mediante `DBMS_SERVICE.START_SERVICE` y guardé su estado para futuros reinicios. Después comprobé que el listener anunciaba `academia_app` y `freepdb1` en estado `READY`.
 
 - **INC-603 – Cuenta de aplicación bloqueada:** Al investigar el error `ORA-28000`, comprobé que `APP_ACADEMIA` estaba en estado `LOCKED`, no `LOCKED(TIMED)`, y que utilizaba el perfil `DEFAULT`; cambié al contenedor `FREEPDB1` y ejecuté `ALTER USER APP_ACADEMIA ACCOUNT UNLOCK`. Al repetir el diagnóstico, la cuenta dejó de aparecer entre las cuentas bloqueadas.
+
+
+
+
+
+# Simulacro de examen 1Z0-182 — S1 a S22
+
+S1. Proceso que genera las alertas de umbral de espacio de los tablespaces.
+- A. SMON
+- B. MMON
+- C. CJQ0
+- D. LGWR
+Correcta: B 
+
+S2. Parámetro con ISSYS_MODIFIABLE = DEFERRED. ¿Cuándo se aplica el cambio?
+- A. Inmediatamente a todas las sesiones.
+- B. En el siguiente arranque.
+- C. A las sesiones que se conecten posteriormente.
+- D. Produce ORA-02095.
+Correcta: C
+
+S3. Sentencia para crear un PFILE con los parámetros en uso, incluidos los calculados por Oracle.
+- A. CREATE PFILE FROM SPFILE;
+- B. CREATE PFILE FROM MEMORY;
+- C. CREATE SPFILE FROM PFILE;
+- D. ALTER SYSTEM DUMP PARAMETERS;
+Correcta: B
+
+S4. Dos sentencias para dejar una PDB en READ WRITE cuando está en READ ONLY.
+- A. ALTER PLUGGABLE DATABASE pdb OPEN READ WRITE;
+- B. ALTER PLUGGABLE DATABASE pdb OPEN READ WRITE FORCE;
+- C. Cerrar la PDB con CLOSE IMMEDIATE y volver a abrirla.
+- D. ALTER PLUGGABLE DATABASE pdb SAVE STATE;
+- E. ALTER DATABASE pdb READ WRITE;
+Correcta A y C.
+
+S5. Vista que muestra el estado guardado de cada PDB.
+- A. V$PDBS
+- B. DBA_PDBS
+- C. DBA_PDB_SAVED_STATES
+- D. V$CONTAINERS
+Correcta: C.
+
+S6. Error que recibe un usuario sin RESTRICTED SESSION al conectarse a una PDB en modo restringido.
+- A. ORA-01109
+- B. ORA-01035
+- C. ORA-12514
+- D. ORA-28000
+Correcta: B
+
+S7. Paquete para crear y arrancar servicios sin Grid Infrastructure.
+- A. DBMS_SERVICE
+- B. DBMS_SCHEDULER
+- C. DBMS_MONITOR
+- D. DBMS_SESSION
+Correcta: A 
+
+S8. Columnas que relacionan V$SESSION con V$PROCESS.
+- A. SID = PID
+- B. PADDR = ADDR
+- C. TADDR = ADDR
+- D. SERIAL# = SPID
+Correcta: B.
+
+S9. Qué sucede con una transacción pendiente al ejecutar ALTER SYSTEM CANCEL SQL.
+- A. Se confirma.
+- B. Se deshace.
+- C. Sigue abierta: solo se cancela la llamada en curso.
+- D. Se convierte en autónoma.
+Correcta: C
+
+S10. Resultado de SHOW USER conectado como SYSOPER.
+- A. SYS
+- B. SYSOPER
+- C. PUBLIC
+- D. SYSTEM
+Correcta: C
+
+S11. Vista que muestra las métricas del último minuto de una PDB.
+- A. V$SYSMETRIC
+- B. V$CON_SYSMETRIC
+- C. V$METRICNAME
+- D. DBA_HIST_SYSMETRIC_SUMMARY
+Correcta: B
+
+S12. Dos componentes que forman DB time.
+- A. Tiempo de CPU en llamadas a la base de datos.
+- B. Tiempo de los procesos de fondo.
+- C. Esperas no Idle de las sesiones de primer plano.
+- D. Tiempo de sesiones inactivas.
+- E. Tiempo de parse de procesos de fondo.
+Correctas: A y C
+
+S13. SYS inserta en HR.T y recibe ORA-01950 sobre USERS. ¿Quién necesita cuota?
+- A. SYS
+- B. HR
+- C. SYSTEM
+- D. Nadie.
+Correcta: B 
+
+S14. Dos tipos de tablespace sobre los que no se puede conceder cuota (ORA-30041).
+- A. UNDO
+- B. SYSAUX
+- C. TEMPORARY
+- D. Bigfile
+- E. Solo lectura
+Correctatas: A y C
+
+S15. Dos afirmaciones correctas sobre una sesión con RESUMABLE que se queda sin cuota.
+- A. La sentencia se suspende hasta el timeout.
+- B. La sentencia se deshace inmediatamente.
+- C. La suspensión aparece en DBA_RESUMABLE.
+- D. Oracle amplía automáticamente la cuota.
+- E. La sesión se desconecta.
+Correctas: A y C
+
+S16. Requisito previo para ejecutar ALTER TABLE t SHRINK SPACE.
+- A. Tablespace bigfile.
+- B. ENABLE ROW MOVEMENT y ASSM.
+- C. Tabla sin índices.
+- D. Base de datos en NOARCHIVELOG.
+Correcta: B
+
+S17. Estado de una cuenta tras tres fallos cuando el perfil tiene FAILED_LOGIN_ATTEMPTS 3 y PASSWORD_LOCK_TIME 1.
+- A. LOCKED
+- B. LOCKED(TIMED)
+- C. EXPIRED
+- D. EXPIRED(GRACE)
+Correcta: B
+
+S18. A concede a B un privilegio de sistema recibido con ADMIN OPTION. El DBA revoca el privilegio a A. ¿Qué ocurre con B?
+- A. Lo pierde en cascada.
+- B. Lo conserva.
+- C. Lo pierde solo si A era su creador.
+- D. Queda pendiente de confirmación.
+Correcta: B
+
+S19. Dos acciones que dejan un índice en estado UNUSABLE.
+- A. ALTER TABLE ... MOVE sin UPDATE INDEXES.
+- B. ALTER INDEX ... UNUSABLE.
+- C. ALTER TABLE ... ADD columna.
+- D. GATHER_TABLE_STATS.
+- E. ALTER INDEX ... REBUILD ONLINE.
+Correctas: A y B
+
+S20. Procedimiento que activa la traza de una sesión de otro usuario usando SID y SERIAL#.
+- A. DBMS_SESSION.SET_SQL_TRACE
+- B. DBMS_MONITOR.SESSION_TRACE_ENABLE
+- C. DBMS_SYSTEM.KSDWRT
+- D. ALTER SESSION SET SQL_TRACE
+Correcta: B
+
+S21. Parámetro que establece la raíz del ADR.
+- A. BACKGROUND_DUMP_DEST
+- B. USER_DUMP_DEST
+- C. DIAGNOSTIC_DEST
+- D. AUDIT_FILE_DEST
+Correcta: C
+
+S22. Primera actuación ante una sesión esperando por enq: TX - row lock contention.
+- A. Reiniciar la instancia.
+- B. Terminar la sesión que espera.
+- C. Identificar al bloqueador mediante BLOCKING_SESSION y averiguar qué está haciendo.
+- D. Aumentar UNDO_RETENTION.
+Correcta: C

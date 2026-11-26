@@ -2,174 +2,146 @@
 
 ### 1. ¿Cuántos errores ORA- tenía tu alert log en 24 h en la Parte B y a qué se debían? ¿Por qué ese número no es una alarma por sí solo?
 
-En la comprobación de la Parte B aparecieron **2 errores ORA- en las últimas 24 horas**. Ese es el resultado que obtuve al consultar el alert log.
-
-Para explicar la causa hay que distinguir el recuento de los mensajes concretos. En los registros posteriores aparecen errores `ORA-00800`, relacionados con el intento de Oracle de elevar la prioridad de los procesos `VKTM` y `LGWR`, que no pudo realizarse por las limitaciones del sistema operativo. También aparecen errores `ORA-65019` al intentar abrir una PDB que ya estaba abierta. Sin embargo, estos mensajes corresponden a una consulta posterior y no puedo asegurar que sean exactamente los dos errores del primer recuento.
-
-El número de errores por sí solo no indica que exista una avería grave. Es necesario comprobar el código, la causa, la frecuencia y si ha tenido consecuencias sobre el funcionamiento de la base de datos.
+En la Parte B hemos visto que en las últimas 24 h se han registrado 2 errores ORA-.
+Los errores registrados en la parte posterior son del tipo ORA-00800 (se trata de errores relacionados con que Oracle ha intentado dar mayor prioridad a los procesos VKTM y LGWR y no ha podido debido a las restricciones del sistema operativo). Además también tenemos errores ORA-65019 (intentando abrir una PDB que ya estaba abierta). Aunque estos son de una consulta posterior y no sé si realmente son los mismos 2 errores de antes.
+Solo con el número de errores no podemos asegurar que haya algún problema grave. Es importante saber de qué tipo de error se trata, cuantas veces ocurre y si afecta al funcionamiento de la base de datos.
 
 ### 2. ¿A qué hora empieza y cuánto dura la ventana de mantenimiento de un miércoles en tu base? ¿Qué tareas automáticas corren en ella?
 
-La ventana `WEDNESDAY_WINDOW` empieza los miércoles a las **22:00** y tiene una duración de **4 horas**, por lo que termina a las 02:00 del jueves.
-
-Durante ese periodo están habilitadas tres tareas automáticas: `auto optimizer stats collection`, que recopila estadísticas para el optimizador; `auto space advisor`, que analiza el uso del espacio; y `sql tuning advisor`, que analiza posibles mejoras en las consultas SQL.
+Esta ventana WEDNESDAY_WINDOW comienza a las 22:00 de los miércoles y tiene una duración de 4h (termina a las 02:00 del día siguiente).
+En esta ventana se tienen activas 3 tareas automáticas: auto optimizer stats collection (estadísticas para el optimizador), auto space advisor (analiza el uso del espacio) y sql tuning advisor (analiza mejoras de consultas SQL).
 
 ### 3. Explica con tu salida de la Parte C la diferencia entre lo que mostraban V$SPPARAMETER y V$PARAMETER tras el SCOPE = SPFILE. ¿Qué habría pasado en el siguiente reinicio sin el RESET?
 
-Al principio, `db_files` tenía el valor 200. Después ejecuté el cambio con `SCOPE=SPFILE` y establecí el valor en 250.
-
-Al consultar las vistas, `V$SPPARAMETER` mostraba 250 porque refleja el valor guardado en el archivo SPFILE. En cambio, `V$PARAMETER` seguía mostrando 200, ya que representa el valor que estaba utilizando la instancia en ese momento.
-
-Esto ocurre porque `db_files` es un parámetro estático y no se puede cambiar directamente en memoria. Si no hubiera ejecutado `RESET`, en el siguiente reinicio Oracle habría aplicado el valor 250 que estaba guardado en el SPFILE.
+Inicialmente el valor de db_files era 200. Hemos modificado el valor (con SCOPE=SPFILE) a 250.
+En V$SPPARAMETER aparece el valor 250 (es el que está almacenado en el SPFILE). En V$PARAMETER sigue apareciendo 200 (el que está en uso en la instancia).
+El parámetro db_files es de tipo estático. No puede modificarse directamente en memoria. En el siguiente reinicio Oracle hubiese cargado el valor almacenado en el SPFILE (250) porque no hubiésemos hecho el RESET.
 
 ### 4. ¿Por qué RESET fue la vuelta atrás correcta para db_files y no lo habría sido para processes? Cita la línea de tu PFILE que lo demuestra.
 
-Utilicé `RESET` con `db_files` porque comprobé que antes del cambio no estaba fijado explícitamente en el SPFILE (`ISSPECIFIED=FALSE`). Por tanto, eliminar esa entrada permitía que Oracle volviera a utilizar el valor predeterminado.
-
-Con `processes` habría sido diferente, ya que en mi PFILE aparece establecido expresamente el valor 200. La línea que lo demuestra es:
-
-`31*:processes=200`
-
-En este caso no habría sido correcto utilizar `RESET`, porque habría eliminado el valor que estaba configurado originalmente. Lo adecuado habría sido restaurar el valor 200 de la copia de seguridad.
+Hemos utilizado RESET en el caso de db_files porque inicialmente no estaba explícitamente definido en el SPFILE (ISSPECIFIED=FALSE). Con esto hemos dejado que Oracle tome el valor por defecto.
+En el caso de processes en nuestro PFILE tenemos un valor explícito:`31*:processes=200`
+En este caso no hubiese sido correcto utilizar RESET (habríamos borrado el valor original). Habría sido más adecuado volver al valor de la copia de seguridad (200).
 
 ### 5. Tras el reinicio sin estado guardado, ¿qué error obtuvo C##OPS_RO y por qué la instancia decía «Database opened»?
 
-Después del reinicio sin guardar el estado de la PDB, `FREEPDB1` quedó en estado `MOUNTED`. Al intentar acceder a ella, `C##OPS_RO` obtuvo el error **ORA-01109: database not open**.
-
-El mensaje `Database opened` no significa que todas las PDB estén abiertas, sino que se refiere a la base de datos contenedora (CDB). En mi caso, la instancia estaba abierta, pero `FREEPDB1` seguía montada y no permitía acceder a la aplicación.
+Tras el reinicio (sin guardar el estado de la PDB) la PDB estaba en estado MOUNTED (FREEPDB1). Al intentar acceder a ella desde C##OPS_RO hemos obtenido el error ORA-01109: database not open.
+Database opened hace referencia a que la base de datos (CDB) está abierta. En nuestro caso estábamos en una instancia abierta. Pero nuestra PDB (FREEPDB1) estaba en estado MOUNTED (no estaba disponible para la aplicación).
 
 ### 6. ¿Qué SID, SPID y evento tenía la sesión de la aplicación en tu ejecución? ¿Qué te dicen MODULE, ACTION y CLIENT_IDENTIFIER que no te diría USERNAME?
 
-La sesión de la aplicación tenía estos datos:
+Los datos de la sesión de la aplicación son los siguientes:
 
-- SID: 58.
-- SERIAL#: 47893.
-- SPID: 5624.
-- Evento: `PL/SQL lock timer`.
-- USERNAME: `APP_ACADEMIA`.
-- SERVICE_NAME: `academia_app`.
-- MODULE: `matriculas`.
-- ACTION: `cierre-periodo`.
-- CLIENT_IDENTIFIER: `ana.garcia@ucam`.
+SID: 58.
+SERIAL#: 47893.
+SPID: 5624.
+Evento: PL/SQL lock timer.
+USERNAME: APP_ACADEMIA.
+SERVICE_NAME: academia_app.
+MODULE: matriculas.
+ACTION: cierre-periodo.
+CLIENT_IDENTIFIER: ana.garcia@ucam.
 
-Con `USERNAME` solamente puedo saber qué cuenta está utilizando la conexión. Los otros campos permiten identificar mejor qué está haciendo la aplicación y quién ha iniciado la operación. En este caso, `MODULE` indica el módulo de matrículas, `ACTION` la operación de cierre de periodo y `CLIENT_IDENTIFIER` identifica a Ana García.
+Con el campo USERNAME solo sabríamos el usuario que está conectando. Con los campos MODULE, ACTION y CLIENT_IDENTIFIER conocemos mejor qué está haciendo la aplicación (en nuestro caso estamos en el módulo matriculas haciendo la acción cierre-periodo) y quién es el usuario que está haciendo la operación (en nuestro caso Ana García).
 
 ### 7. Tras CANCEL SQL, ¿cuántas transacciones abiertas tenía la aplicación? ¿Y tras KILL SESSION? ¿En qué estado quedó la fila 101 y por qué?
 
-Después de ejecutar `CANCEL SQL`, la aplicación todavía tenía **una transacción abierta**. Cancelar la sentencia actual no significa necesariamente que se cierre la sesión ni que se deshaga toda la transacción.
-
-Después ejecuté `KILL SESSION '58,47893' IMMEDIATE`. La sesión terminó y el número de sesiones activas de la aplicación pasó a cero.
-
-La fila 101 quedó en estado `ACTIVO`, porque el cambio que se estaba realizando todavía no se había confirmado. Al terminar la sesión, Oracle deshizo la transacción pendiente mediante un rollback y recuperó el estado anterior de la fila.
+Tras el CANCEL SQL la aplicación tenía una transacción abierta (cancelar la sentencia que se estaba ejecutando no implica cerrar la sesión ni cancelar la transacción completa).
+Posteriormente hemos realizado el KILL SESSION '58,47893' IMMEDIATE. La sesión ha terminado (hay 0 sesiones activas de la aplicación).
+La fila 101 queda en estado ACTIVO. Se estaba haciendo un cambio que aún no se había confirmado. Al finalizar la sesión Oracle realiza un rollback (deshace la transacción pendiente) y devuelve el estado anterior de la fila.
 
 ### 8. ¿Qué valor tiene common_user_prefix en tu imagen? ¿Qué implica para el nombre de una cuenta común?
 
-En mi imagen, el parámetro `common_user_prefix` aparece vacío. Esto significa que no se exige un prefijo concreto como `C##` para crear una cuenta común.
-
-Por tanto, se pueden crear usuarios comunes sin tener que utilizar obligatoriamente ese prefijo en el nombre.
+En nuestro caso el parámetro common_user_prefix está vacío. Esto quiere decir que no es necesario utilizar un prefijo determinado (como C##) para crear una cuenta común.
+Por tanto podemos crear usuarios comunes sin necesidad de utilizar el prefijo.
 
 ### 9. Completa con tus cifras la tabla de las tres miradas (ALL_TABLES, DBA_USERS, CDB_USERS, V$DATAFILE) y explica una diferencia.
 
-Estos son los resultados que obtuve en las tres conexiones:
+Las 3 consultas en las diferentes conexiones han arrojado los siguientes resultados:
 
-| Consulta | C##OPS_RO en CDB$ROOT | C##OPS_RO en FREEPDB1 | APP_ACADEMIA en FREEPDB1 |
-|---|---:|---:|---:|
-| ALL_TABLES de ADMIN_ACADEMIA | 0 | 0 | 1 |
-| DBA_USERS | 37 | 47 | ORA-00942 |
-| CDB_USERS | CON_ID 1: 37; CON_ID 3: 47 | CON_ID 3: 47 | ORA-00942 |
-| V$DATAFILE | 17 | 10 | ORA-00942 |
+Consulta C##OPS_RO en CDB$ROOT C##OPS_RO en FREEPDB1 APP_ACADEMIA en FREEPDB1
 
-Como información complementaria, `USER_TABLES` devolvió 0 en las tres conexiones y `ALL_USERS` mostró 37 usuarios desde la raíz y 47 desde la PDB.
+ALL_TABLES de ADMIN_ACADEMIA 0 0 1
+DBA_USERS 37 47 ORA-00942
+CDB_USERS CON_ID 1: 37 CON_ID 3: 47 ORA-00942
+V$DATAFILE 17 10 ORA-00942
 
-La diferencia principal está en los permisos y en el contenedor desde el que se realizan las consultas. `C##OPS_RO` puede consultar información de varios contenedores desde la raíz porque tiene configurado `CONTAINER_DATA=ALL`. Desde `FREEPDB1`, en cambio, solo ve la información de esa PDB.
-
-Por otro lado, `APP_ACADEMIA` puede consultar la tabla de `ADMIN_ACADEMIA` que tiene autorizada, pero no tiene permisos para consultar las vistas administrativas `DBA_USERS`, `CDB_USERS` y `V$DATAFILE`. Por eso obtiene `ORA-00942`.
+Información adicional: USER_TABLES en las 3 conexiones da 0. ALL_USERS en raíz da 37 y en PDB 47.
+La principal diferencia es el nivel de permisos y el contenedor en el que estamos. Desde CDB$ROOT (con C##OPS_RO) tenemos configurado CONTAINER_DATA=ALL y podemos acceder a información de varios contenedores. Desde FREEPDB1 solo tenemos acceso a la información de esta PDB.
+Por otro lado, el usuario APP_ACADEMIA tiene permisos para acceder a la tabla de ADMIN_ACADEMIA (que es la que tiene autorizado) pero no tiene permisos para acceder a vistas administrativas (DBA_USERS, CDB_USERS y V$DATAFILE). Por este motivo obtiene ORA-00942.
 
 ### 10. Con tu salida de 04-deltas: ¿cuántas lecturas lógicas por recorrido y cuánto DB time costó la carga? ¿Qué indica la relación entre DB time y DB CPU?
 
-En mi prueba obtuve **59.513 lecturas lógicas en 10 recorridos**, lo que supone una media aproximada de **5.951 lecturas lógicas por recorrido**.
-
-El DB time de la carga fue de **0,32 segundos**, mientras que el DB CPU fue de **0,31 segundos**. Los dos valores son prácticamente iguales, por lo que casi todo el tiempo se empleó en trabajo de CPU y hubo muy poco tiempo dedicado a esperas.
+En nuestra prueba se han realizado 59.513 lecturas lógicas en 10 recorridos (media de 5.951 por recorrido).
+El DB time de la carga es de 0,32 segundos. El DB CPU es de 0,31 segundos. Son prácticamente iguales. Esto quiere decir que hemos invertido casi todo el tiempo en trabajo de CPU (prácticamente no hemos tenido tiempos de espera).
 
 ### 11. Da las tres medidas (asignado, libre, máximo) de TBS_ACADEMIA_HIST antes de la carga y explica cuál usarías para alertar.
 
-Antes de realizar la carga, `TBS_ACADEMIA_HIST` tenía:
+Antes de la carga tenemos los siguientes valores en TBS_ACADEMIA_HIST:
 
-- Espacio asignado: **10 MB**.
-- Espacio libre: **3,9 MB**.
-- Tamaño máximo: **40 MB**.
+Espacio asignado: 10 MB.
+Espacio libre: 3,9 MB.
+Tamaño máximo: 40 MB.
 
-Para establecer una alerta tendría en cuenta el porcentaje ocupado respecto al máximo permitido, además del espacio libre actual. Esto es importante porque el tablespace puede crecer automáticamente y el espacio asignado no representa necesariamente su límite real.
+Para alertar deberíamos tomar en cuenta el porcentaje de ocupación (respecto al máximo permitido) y el espacio libre. Es importante tener en cuenta que el tablespace puede crecer de manera automática. Por lo que el espacio asignado no es siempre el límite real.
 
 ### 12. ¿Quién insertó y quién «pagó» en el ORA-01950? ¿Por qué ampliar el tablespace no habría resuelto el ORA-01536?
 
-En la primera prueba, la inserción se ejecutó desde la sesión administrativa, pero el segmento pertenecía al usuario `CARGA_HIST`. Por tanto, quien necesitaba disponer de cuota en `TBS_ACADEMIA_HIST` era el propietario del segmento.
-
-Al no tener cuota asignada, apareció el error `ORA-01950`. Después le asigné una cuota de 2 MB y repetí la carga, pero esta vez apareció `ORA-01536` porque se superó esa cantidad.
-
-Ampliar el tablespace no habría solucionado el problema, ya que no faltaba espacio físico en él, sino cuota para el usuario propietario. La solución fue ampliar la cuota de `CARGA_HIST` a 30 MB.
+En la primera prueba se ha realizado la inserción desde la sesión administrativa. El segmento es del usuario CARGA_HIST. Por lo que es necesario que este tenga cuota en TBS_ACADEMIA_HIST.
+Como no tenía cuota asignada ha saltado el error ORA-01950. Posteriormente hemos asignado cuota (de 2MB) a este usuario. Volvimos a cargar y salta el error ORA-01536 (superamos la cuota asignada).
+No hubiese sido solución aumentar el tamaño del tablespace. El problema no estaba en el espacio físico del tablespace sino en que el propietario del segmento no tenía cuota. La solución ha sido aumentar la cuota de CARGA_HIST a 30MB.
 
 ### 13. ¿Cuánto tiempo estuvo suspendida la carga reanudable y qué evidencia de ello dejó Oracle en el alert log?
 
-La carga se configuró como reanudable con un tiempo máximo de espera de **180 segundos**. Cuando se superó la cuota de `TBS_ACADEMIA_HIST`, Oracle no canceló directamente la operación, sino que la dejó suspendida por el error `ORA-01536`.
-
-En el alert log aparece primero el mensaje indicando que la sentencia `carga-historico` quedó suspendida y después otro indicando que se reanudó. Según las marcas temporales de la salida, la suspensión se produjo aproximadamente a las **07:40:57.641** y la reanudación a las **07:41:08.559**, por lo que estuvo suspendida unos **10,92 segundos**.
-
-Después de ampliar la cuota del propietario a 30 MB, Oracle pudo continuar la operación y completar la inserción de las 20.000 filas.
+Hemos configurado la carga como reanudable (con un máximo de 180 segundos de espera). Cuando hemos superado la cuota del TBS_ACADEMIA_HIST Oracle no ha cancelado directamente la operación. Ha dejado la operación en estado suspendido (por el error ORA-01536).
+En el alert log se deja constancia de que se ha suspendido la sentencia (carga-historico) y posteriormente se reanuda. En concreto se ha suspendido a las 07:40:57.641 y se ha reanudado a las 07:41:08.559. Por tanto ha estado suspendido durante unos 10,92 segundos.
+Una vez hemos aumentado la cuota del propietario (a 30MB) Oracle ha podido continuar la operación. Se han insertado correctamente las 20.000 filas.
 
 ### 14. Antes y después del SHRINK: filas, bloques y cuota consumida. ¿Por qué un DELETE no devolvió el espacio?
 
-Antes de borrar datos, la tabla tenía **20.000 filas**, ocupaba **2.944 bloques** y consumía aproximadamente **23 MB de cuota**.
-
-Después de eliminar 18.000 filas, quedaron 2.000 registros, pero el segmento seguía ocupando 2.944 bloques y consumiendo unos 23 MB. Esto ocurre porque `DELETE` elimina las filas, pero no reduce automáticamente el tamaño del segmento.
-
-Después de ejecutar `SHRINK`, la tabla seguía teniendo 2.000 filas, pero pasó a ocupar **304 bloques** y aproximadamente **2,4 MB** de cuota. De esta forma, Oracle pudo recuperar el espacio que ya no necesitaba el segmento.
+Antes de eliminar los datos teníamos 20.000 filas. Consumía unos 23MB de cuota. Tenía 2.944 bloques.
+Tras eliminar 18.000 filas (queda 2.000 registros) sigue ocupando 2.944 bloques (consume unos 23MB). El DELETE no provoca que se libere espacio automáticamente.
+Tras el SHRINK sigue con 2.000 filas. Ahora ocupa 304 bloques (consume unos 2,4 MB). De esta forma Oracle ha podido liberar el espacio que ya no necesita el segmento.
 
 ### 15. ¿Qué valores tenía tu perfil DEFAULT? Justifica dos de los límites de PRF_PERSONAS para una persona de secretaría.
 
-Al consultar el perfil `DEFAULT` de mi base de datos obtuve estos valores:
+Consultando el perfil DEFAULT de nuestra base de datos tenemos los siguientes valores:
 
-| Parámetro | Valor |
-|---|---|
-| FAILED_LOGIN_ATTEMPTS | 10 |
-| INACTIVE_ACCOUNT_TIME | 365 |
-| PASSWORD_GRACE_TIME | 7 |
-| PASSWORD_LIFE_TIME | 180 |
-| PASSWORD_LOCK_TIME | 1 |
-| PASSWORD_REUSE_MAX | UNLIMITED |
-| PASSWORD_REUSE_TIME | UNLIMITED |
-| PASSWORD_ROLLOVER_TIME | 0 |
-| PASSWORD_VERIFY_FUNCTION | NULL |
+Parámetro Valor
 
-Para la cuenta de una persona de secretaría configuré el perfil `PRF_PERSONAS`, con 3 intentos fallidos, un bloqueo de 1 minuto, una duración de contraseña de 90 días, 7 días de gracia y 90 días de inactividad. También utilicé la función `ORA12C_VERIFY_FUNCTION` para comprobar la complejidad de las contraseñas.
+FAILED_LOGIN_ATTEMPTS 10
+INACTIVE_ACCOUNT_TIME 365
+PASSWORD_GRACE_TIME 7
+PASSWORD_LIFE_TIME 180
+PASSWORD_LOCK_TIME 1
+PASSWORD_REUSE_MAX UNLIMITED
+PASSWORD_REUSE_TIME UNLIMITED
+PASSWORD_ROLLOVER_TIME 0
+PASSWORD_VERIFY_FUNCTION NULL
 
-Me parecen especialmente importantes los 3 intentos fallidos, porque reducen el riesgo de que alguien pruebe muchas contraseñas hasta conseguir acceder a la cuenta. También considero importante la duración de 90 días, ya que obliga a renovar periódicamente las credenciales. El bloqueo de un minuto es una configuración específica de este laboratorio y no necesariamente la que utilizaría en un entorno real.
+Para la cuenta de una persona de secretaría hemos configurado el perfil PRF_PERSONAS. En él tenemos 3 intentos fallidos (con lo que reducimos el riesgo de que se intente acceder con muchas contraseñas distintas), un tiempo de bloqueo de 1 minuto (configuración específica de este laboratorio, que no es la que utilizaríamos en un entorno real), 90 días de vida de la contraseña (con lo que obligamos a que se renueven periódicamente) y 7 días de gracia. Además hemos indicado que se utilice la función ORA12C_VERIFY_FUNCTION para comprobar la complejidad de las contraseñas.
 
 ### 16. ¿Por qué Ana pudo leer ACA_MATRICULAS si nadie se la concedió por nombre? ¿Qué error obtuvo al cambiar el nombre de un alumno?
 
-Ana podía consultar `ACA_MATRICULAS` porque tenía asignado el rol `ROL_SECRETARIA_ACADEMIA`, que heredaba los permisos de `ROL_LECTURA_ACADEMIA`. Este último tenía el privilegio `SELECT ANY TABLE ON SCHEMA ADMIN_ACADEMIA`, por lo que podía consultar las tablas de ese esquema sin necesitar una concesión individual para cada una.
-
-Sin embargo, al intentar modificar el nombre de un alumno obtuvo el error **ORA-41900: missing UPDATE privilege**. Esto se debe a que su permiso de actualización estaba limitado a la columna `ESTADO`. Podía consultar los datos y cambiar el estado de los alumnos, pero no modificar sus nombres.
+Ana tiene asignado el rol ROL_SECRETARIA_ACADEMIA. Este rol tiene asignado el rol ROL_LECTURA_ACADEMIA. En este último tenemos el privilegio SELECT ANY TABLE ON SCHEMA ADMIN_ACADEMIA. Con esto podemos acceder a cualquier tabla de este esquema.
+Al intentar modificar el nombre de un alumno ha recibido el error ORA-41900: missing UPDATE privilege. Esto es debido a que solo tenemos permiso de actualización sobre la columna ESTADO. Por tanto podemos modificar el estado de los alumnos, pero no sus nombres.
 
 ### 17. ¿Qué objetos se invalidaron en cada uno de los tres cambios de columna y por qué no se invalidó nada con la columna nueva?
 
-Al principio, la función `F_TOTAL_ACTIVOS_LAB6` y las vistas `V_ACTIVOS_LAB6` y `V_CONTACTO_LAB6` aparecían como `VALID`.
-
-Cuando añadí una columna nueva que no utilizaban los objetos existentes, ninguno se invalidó. Sin embargo, al ampliar la columna `email_institucional`, la vista `V_CONTACTO_LAB6` pasó a estar `INVALID`.
-
-Después, al ampliar la columna `nombres`, quedaron invalidados la función `F_TOTAL_ACTIVOS_LAB6` y las dos vistas. Esto se debe a que esos objetos dependen de la tabla y de las columnas modificadas. Finalmente, realicé las recompilaciones correspondientes y la comprobación terminó sin objetos de negocio inválidos.
+Inicialmente tenemos la función F_TOTAL_ACTIVOS_LAB6 y las vistas V_ACTIVOS_LAB6 y V_CONTACTO_LAB6 en estado VALID.
+Al añadir una nueva columna (que no es utilizada por ningún objeto existente) no se invalida ningún objeto.
+Al ampliar la columna email_institucional se invalida la vista V_CONTACTO_LAB6.
+Al ampliar la columna nombres se invalidan la función y las dos vistas. Esto es debido a que dependen de la tabla y de las columnas que hemos modificado. Posteriormente hemos realizado las recompilaciones pertinentes. Al final no quedaban objetos de negocio inválidos.
 
 ### 18. Según tus advisors, ¿mejoraría el DB time duplicar la SGA? ¿Y por debajo de qué tamaño la PGA tendría sobreasignaciones?
 
-Según los resultados del asesor de SGA, aumentar la memoria de **1.536 MB a 3.072 MB** no suponía una mejora estimada del DB time, ya que el factor de mejora era 1.
-
-En cuanto a la PGA, con **128 MB y 256 MB** aparecían 5 sobreasignaciones. Al probar con **384 MB**, dejaron de aparecer. Por tanto, en mi prueba el tamaño a partir del cual desaparecían las sobreasignaciones fue 384 MB. Esto es el resultado de mi entorno de laboratorio, no un valor universal para todas las bases de datos.
+De acuerdo con el asesor de SGA, no es conveniente aumentar la memoria (de 1.536 MB a 3.072 MB) ya que no mejora el DB time (factor de mejora es 1).
+En el caso de la PGA tenemos 5 sobreasignaciones para 128 MB y 256 MB. Para 384 MB ya no tenemos sobreasignaciones. En nuestro caso el umbral es de 384 MB (en nuestro entorno de laboratorio).
 
 ### 19. ¿Cuántas lecturas lógicas necesitó la consulta de la aplicación según la traza (o tkprof)? ¿Qué línea de la traza lo dice?
 
-La consulta de la aplicación necesitó **247 lecturas lógicas**. En la salida de `tkprof` aparecía `FETCH query=247`, con `disk=0`.
-
-La línea de la traza que lo demuestra es la correspondiente a `FETCH`, donde aparece `p=0, cr=247`. El valor `cr` representa las lecturas lógicas y `p` las lecturas físicas. Por tanto, se realizaron 247 lecturas lógicas y ninguna física.
+La consulta de la aplicación ha necesitado 247 lecturas lógicas. En la salida de tkprof tenemos FETCH query=247 (disk=0).
+En la traza tenemos la línea FETCH p=0, cr=247. En esta línea el parámetro cr corresponde a las lecturas lógicas y p a las lecturas físicas. Por tanto se han realizado 247 lecturas lógicas y ninguna física.
 
 ### 20. Para cada incidente de la guardia: evidencia clave, intervención y validación (una línea por cada uno).
 
